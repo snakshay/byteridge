@@ -33,7 +33,7 @@ function Register() {
     const { errors, isSubmitting } = formState;
 
     async function onSubmit(data) {
-        console.log(data)
+        data['ip'] = localStorage.getItem('ip');
         dispatch(alertActions.clear());
         try {
             await dispatch(userActions.register(data)).unwrap();

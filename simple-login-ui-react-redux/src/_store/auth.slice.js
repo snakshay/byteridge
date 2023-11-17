@@ -81,6 +81,7 @@ function createExtraActions() {
 
                   
                     localStorage.removeItem('auth');
+                    localStorage.removeItem('ip');
 
 
                     history.navigate('/account/login');

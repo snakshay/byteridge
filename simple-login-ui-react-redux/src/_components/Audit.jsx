@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { userActions } from '_store';
@@ -6,17 +6,29 @@ import { userActions } from '_store';
 
 
 function Audit() {
-  const users = useSelector(x => x.users.list);
-  const dispatch = useDispatch();
-  const auth = useSelector(x => x.auth.value);
+const dispatch = useDispatch();
+const auth = useSelector(x => x.auth.value);
+const users = useSelector(x => x.users.users);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; 
+    
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentUsers = users?.value?.slice(indexOfFirstItem, indexOfLastItem);
+    
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+      };
 
   useEffect(() => {
     
       dispatch(userActions.getAudit({role:auth.role}));
-  }, []);
+  }, [auth.role]);
 
   return (
       <div>
+          {console.log("currentusers",currentUsers)}
           <h1>Audit</h1>
           <table className="table table-striped">
               <thead>
@@ -31,7 +43,7 @@ function Audit() {
                   </tr>
               </thead>
               <tbody>
-                  {users?.value?.map(user =>
+                  {currentUsers?.map(user =>
                       <tr key={user.id}>
                           <td>{user.firstName}</td>
                           <td>{user.lastName}</td>
@@ -52,6 +64,18 @@ function Audit() {
                   }
               </tbody>
           </table>
+
+          <nav>
+                <ul className="pagination">
+                {Array.from({ length: Math.ceil(users?.value?.length / itemsPerPage) }, (_, index) => (
+                    <li key={index} className={index + 1 === currentPage ? 'page-item active' : 'page-item'}>
+                    <button  onClick={() => paginate(index + 1)} className="page-link">
+                        {index + 1}
+                    </button>
+                    </li>
+                ))}
+                </ul>
+            </nav>
       </div>
   );
 }

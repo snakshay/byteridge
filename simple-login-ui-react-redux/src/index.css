@@ -1,3 +1,7 @@
 .app-container {
     min-height: 350px;
 }
+.pagination{
+    display: flex;
+    justify-content: center;
+}

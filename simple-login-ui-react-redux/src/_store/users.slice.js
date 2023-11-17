@@ -21,7 +21,8 @@ export const usersReducer = slice.reducer;
 function createInitialState() {
     return {
         list: null,
-        item: null
+        item: null,
+        users:null,
     }
 }
 
@@ -107,6 +108,7 @@ function createExtraReducers() {
         getAll();
         getById();
         _delete();
+        getAudit();
 
         function getAll() {
             var { pending, fulfilled, rejected } = extraActions.getAll;
@@ -119,6 +121,20 @@ function createExtraReducers() {
                 })
                 .addCase(rejected, (state, action) => {
                     state.list = { error: action.error };
+                });
+        }
+
+        function getAudit() {
+            var { pending, fulfilled, rejected } = extraActions.getAudit;
+            builder
+                .addCase(pending, (state) => {
+                    state.users = { loading: true };
+                })
+                .addCase(fulfilled, (state, action) => {
+                    state.users = { value: action.payload };
+                })
+                .addCase(rejected, (state, action) => {
+                    state.users = { error: action.error };
                 });
         }
 
